@@ -13,12 +13,18 @@ export function calculateHeroScores(answers, giftPrice) {
     "Ant-Man": 0,
     "Doctor Strange": 0,
     "Wonder Woman": 0,
+    "CID Moosa": 0,
+    "Minnal Murali": 0,
   };
 
   // Question-based scoring
   if (answers.Q2 === "yes") scores["Wonder Woman"] += 40; // Likes Barbie dolls
   if (answers.Q3 === "yes") scores["Spider-Man"] -= 100; // Afraid of spiders
-  if (answers.Q4 === "yes") scores["Flash"] += 50; // Likes racing
+  if (answers.Q4 === "yes") {
+    scores["Flash"] += 50; // Likes racing
+    scores["Minnal Murali"] += 45; // Speed hero, likes racing
+    scores["CID Moosa"] += 60; // Has a red car, loves racing!
+  }
   if (answers.Q5 === "yes") scores["Aquaman"] += 40; // Likes water
   if (answers.Q6 === "yes") scores["Doctor Strange"] += 50; // Likes magic stories
   if (answers.Q7 === "yes") scores["Ant-Man"] += 40; // Likes tiny toys

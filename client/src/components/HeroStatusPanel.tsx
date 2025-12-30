@@ -24,6 +24,8 @@ const heroEmojis: Record<string, string> = {
   "Ant-Man": "🐜",
   "Doctor Strange": "✨",
   "Wonder Woman": "⭐",
+  "CID Moosa": "🚗",
+  "Minnal Murali": "⚡",
 };
 
 export default function HeroStatusPanel({ heroes }: HeroStatusPanelProps) {

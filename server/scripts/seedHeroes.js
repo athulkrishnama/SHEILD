@@ -13,6 +13,8 @@ const heroes = [
   { name: "Ant-Man", speedFactor: 0.4 },
   { name: "Doctor Strange", speedFactor: 0.2 },
   { name: "Wonder Woman", speedFactor: 0.5 },
+  { name: "CID Moosa", speedFactor: 0.65 }, // Malayalam detective with red car
+  { name: "Minnal Murali", speedFactor: 0.25 }, // Malayalam superhero with speed like Flash
 ];
 
 async function seedHeroes() {
