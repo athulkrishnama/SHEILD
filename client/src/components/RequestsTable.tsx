@@ -176,102 +176,110 @@ export default function RequestsTable({
                       </>
                     )}
                   </motion.button>
-
-                  {/* Recommendations Modal/Overlay */}
-                  <AnimatePresence>
-                    {expandedRequest === request._id && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-                        onClick={() => setExpandedRequest(null)}
-                      >
-                        <motion.div
-                          initial={{ scale: 0.9, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0.9, opacity: 0 }}
-                          onClick={(e) => e.stopPropagation()}
-                          className="card max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-                        >
-                          <div className="mb-4">
-                            <h3 className="text-xl font-bold text-black mb-2">
-                              Hero Recommendations
-                            </h3>
-                            <p className="text-sm text-grey-700">
-                              For {request.childName}'s {request.gift}
-                            </p>
-                          </div>
-
-                          {loadingRecs ? (
-                            <p className="text-center text-grey-700 py-8">
-                              Loading recommendations...
-                            </p>
-                          ) : recommendations.length === 0 ? (
-                            <p className="text-center text-grey-700 py-8">
-                              No recommendations available
-                            </p>
-                          ) : (
-                            <div className="space-y-3">
-                              {recommendations.map((rec) => (
-                                <div
-                                  key={rec.heroId}
-                                  className="p-3 bg-snow-white rounded-lg border border-border-grey hover:border-christmas-red transition-colors"
-                                >
-                                  <div className="flex justify-between items-center">
-                                    <div className="flex-1">
-                                      <h4 className="font-semibold text-black">
-                                        {rec.name}
-                                      </h4>
-                                      <div className="flex gap-4 mt-1 text-sm text-grey-700">
-                                        <span>Score: {rec.score}</span>
-                                        <span>ETA: {formatTime(rec.eta)}</span>
-                                        <span
-                                          className={
-                                            rec.status === "Free"
-                                              ? "text-christmas-red font-semibold"
-                                              : "text-grey-600"
-                                          }
-                                        >
-                                          {rec.status}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <motion.button
-                                      whileHover={{ scale: 1.05 }}
-                                      whileTap={{ scale: 0.95 }}
-                                      onClick={() =>
-                                        assignHero(request._id, rec.heroId)
-                                      }
-                                      disabled={assigning}
-                                      className="btn btn-success text-sm px-4 py-2"
-                                    >
-                                      Assign
-                                    </motion.button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setExpandedRequest(null)}
-                            className="btn btn-outline w-full mt-4"
-                          >
-                            Close
-                          </motion.button>
-                        </motion.div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
               )}
             </motion.div>
           ))}
         </div>
       )}
+
+      {/* Recommendations Modal - Rendered outside card grid */}
+      <AnimatePresence>
+        {expandedRequest && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setExpandedRequest(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="card max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            >
+              {(() => {
+                const request = requests.find((r) => r._id === expandedRequest);
+                if (!request) return null;
+
+                return (
+                  <>
+                    <h3 className="text-xl font-bold text-black mb-2">
+                      Hero Recommendations
+                    </h3>
+                    <p className="text-sm text-grey-700 mb-4">
+                      For {request.childName}'s {request.gift}
+                    </p>
+
+                    {loadingRecs ? (
+                      <div className="text-center py-8 text-grey-700">
+                        Loading heroes...
+                      </div>
+                    ) : recommendations.length > 0 ? (
+                      <div className="space-y-3">
+                        {recommendations.map((rec) => (
+                          <div
+                            key={rec.heroId}
+                            className="p-4 bg-snow-white rounded-lg border border-border-grey hover:border-christmas-red transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-black">
+                                  {rec.name}
+                                </h4>
+                                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-grey-700">
+                                  <span>Score: {rec.score}</span>
+                                  <span>ETA: {formatTime(rec.eta)}</span>
+                                  <span
+                                    className={
+                                      rec.status === "Free"
+                                        ? "text-christmas-red font-semibold"
+                                        : "text-grey-600"
+                                    }
+                                  >
+                                    {rec.status}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() =>
+                                  assignHero(request._id, rec.heroId)
+                                }
+                                disabled={assigning}
+                                className="btn btn-primary px-6 py-2 whitespace-nowrap flex-shrink-0"
+                              >
+                                {assigning ? "..." : "Assign"}
+                              </motion.button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-grey-700">
+                        No recommendations available
+                      </div>
+                    )}
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setExpandedRequest(null)}
+                      className="btn btn-outline w-full mt-4"
+                    >
+                      Close
+                    </motion.button>
+                  </>
+                );
+              })()}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
