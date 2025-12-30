@@ -3,7 +3,6 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, UserCheck, MapPin, Gift } from "lucide-react";
 import { formatTime } from "../utils/timeFormatter";
-import HeroAssignmentCelebration from "./HeroAssignmentCelebration";
 import { playHeroMusic } from "../utils/audioPlayer";
 
 interface Request {
@@ -31,7 +30,7 @@ export default function RequestsTable({
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [assigning, setAssigning] = useState(false);
-  const [celebratingHero, setCelebratingHero] = useState<string | null>(null);
+  const [ setCelebratingHero] = useState<string | null>(null);
 
   const getRecommendations = async (requestId: string) => {
     if (expandedRequest === requestId) {
