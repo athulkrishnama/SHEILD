@@ -30,7 +30,7 @@ export default function RequestsTable({
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [assigning, setAssigning] = useState(false);
-  const [ setCelebratingHero] = useState<string | null>(null);
+  const [_, setCelebratingHero] = useState<string | null>(null);
 
   const getRecommendations = async (requestId: string) => {
     if (expandedRequest === requestId) {
