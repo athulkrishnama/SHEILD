@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 interface User {
   username: string;
@@ -20,9 +20,7 @@ export const useAuth = () => {
 
   const checkAuth = async () => {
     try {
-      const response = await axios.get("/api/auth/check", {
-        withCredentials: true,
-      });
+      const response = await api.get("/api/auth/check");
 
       setAuthState({
         isAuthenticated: response.data.authenticated,
