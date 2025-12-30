@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import {
   initializeMap,
   addDestinationMarker,

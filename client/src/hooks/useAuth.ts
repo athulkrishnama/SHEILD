@@ -38,13 +38,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await axios.post(
-        "/api/auth/logout",
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+      await api.post("/api/auth/logout");
 
       setAuthState({
         isAuthenticated: false,
