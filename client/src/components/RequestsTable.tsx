@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, UserCheck, MapPin, Gift } from "lucide-react";
 import { formatTime } from "../utils/timeFormatter";
@@ -42,7 +42,7 @@ export default function RequestsTable({
     setLoadingRecs(true);
 
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `/api/requests/${requestId}/recommendations`
       );
       setRecommendations(response.data.recommendations);
@@ -57,7 +57,7 @@ export default function RequestsTable({
   const assignHero = async (requestId: string, heroId: string) => {
     setAssigning(true);
     try {
-      await axios.post(`/api/requests/${requestId}/assign`, { heroId });
+      await api.post(`/api/requests/${requestId}/assign`, { heroId });
 
       // Find the hero name from recommendations
       const assignedHero = recommendations.find((rec) => rec.heroId === heroId);

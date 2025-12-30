@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, User, AlertCircle } from "lucide-react";
-import axios from "axios";
+import api from "../api/axios";
 import { SnowOverlay } from "../components/decorations/ChristmasDecor";
 
 export default function Login() {
@@ -18,16 +18,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "/api/auth/login",
-        {
-          username,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.post("/api/auth/login", {
+        username,
+        password,
+      });
 
       if (response.data.success) {
         navigate("/dashboard");

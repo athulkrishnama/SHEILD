@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { motion } from "framer-motion";
 import HeroStatusPanel from "../components/HeroStatusPanel";
 import RequestsTable from "../components/RequestsTable";
@@ -22,8 +22,8 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       const [requestsRes, heroesRes] = await Promise.all([
-        axios.get("/api/requests"),
-        axios.get("/api/heroes"),
+        api.get("/api/requests"),
+        api.get("/api/heroes"),
       ]);
 
       setRequests(requestsRes.data.requests);

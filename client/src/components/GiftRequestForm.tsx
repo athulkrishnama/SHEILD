@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { motion } from "framer-motion";
 import { Gift } from "lucide-react";
 import CitySearchBox from "./CitySearchBox";
@@ -37,7 +37,7 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
     setError("");
 
     try {
-      await axios.post("/api/requests", {
+      await api.post("/api/requests", {
         ...formData,
         answers,
       });

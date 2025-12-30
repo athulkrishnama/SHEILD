@@ -52,9 +52,9 @@ export default function DeliveryMap({ mapboxToken }: DeliveryMapProps) {
       try {
         console.log("Fetching active deliveries...");
         const [deliveriesRes, requestsRes, heroesRes] = await Promise.all([
-          axios.get("/api/heroes/deliveries/active"),
-          axios.get("/api/requests"),
-          axios.get("/api/heroes"),
+          api.get("/api/heroes/deliveries/active"),
+          api.get("/api/requests"),
+          api.get("/api/heroes"),
         ]);
 
         const deliveries = deliveriesRes.data.deliveries || [];
