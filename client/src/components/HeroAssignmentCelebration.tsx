@@ -1,71 +1,61 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getHeroImageUrl } from "../utils/heroImages";
 
 interface HeroAssignmentCelebrationProps {
   heroName: string;
-  isVisible: boolean;
+  heroEmoji: string;
   onComplete: () => void;
 }
 
-const heroEmojis: Record<string, string> = {
-  Flash: "⚡",
-  "Spider-Man": "🕷️",
+const heroEmojis: { [key: string]: string } = {
+  Superman: "🦸‍♂️",
   Batman: "🦇",
-  Aquaman: "🔱",
+  "Wonder Woman": "👸",
+  Flash: "⚡",
+  Aquaman: "🌊",
+  "Spider-Man": "🕷️",
+  "Iron Man": "🤖",
+  Hulk: "💚",
+  "Black Panther": "🐆",
+  "Captain America": "🛡️",
   "Ant-Man": "🐜",
-  "Doctor Strange": "✨",
-  "Wonder Woman": "⭐",
-  "CID Moosa": "🚗",
   "Minnal Murali": "⚡",
+  "CID Moosa": "🚗",
 };
 
 export default function HeroAssignmentCelebration({
   heroName,
-  isVisible,
+  heroEmoji,
   onComplete,
 }: HeroAssignmentCelebrationProps) {
-  useEffect(() => {
-    if (isVisible) {
-      // Auto-close after 3 seconds
-      const timer = setTimeout(() => {
-        onComplete();
-      }, 3000);
+  const [imageError, setImageError] = useState(false);
+  const heroImageUrl = getHeroImageUrl(heroName);
+  const displayEmoji = heroEmojis[heroName] || heroEmoji || "🦸";
 
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible, onComplete]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onComplete]);
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 flex items-center justify-center z-[100] pointer-events-none"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          exit={{ scale: 0, rotate: 180 }}
+          transition={{ type: "spring", duration: 0.8 }}
+          className="relative"
         >
-          {/* Background overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.8 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black pointer-events-auto"
-          />
-
-          {/* Celebration content */}
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{
-              scale: [0, 1.2, 1],
-              rotate: [0, 10, -10, 0],
-            }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{
-              duration: 0.6,
-              times: [0, 0.6, 1],
-              ease: "easeOut",
-            }}
-            className="relative z-10 text-center"
           >
             {/* Hero emoji */}
             <motion.div

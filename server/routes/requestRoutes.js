@@ -1,7 +1,6 @@
 import express from "express";
 import Request from "../models/Request.js";
 import Hero from "../models/Hero.js";
-import { predictGiftPrice } from "../services/pricePredictor.js";
 import { calculateHeroScores } from "../services/heroScorer.js";
 import { analyzeArea, calculateDistance } from "../services/areaAnalyzer.js";
 import { calculateDeliveryTime } from "../services/timeCalculator.js";
@@ -15,17 +14,22 @@ const router = express.Router();
  */
 router.post("/", async (req, res) => {
   try {
-    const { childName, city, lat, lng, gift, answers } = req.body;
+    const { childName, city, lat, lng, gift, giftPrice, answers } = req.body;
 
     // Validate required fields
-    if (!childName || !city || !lat || !lng || !gift || !answers) {
+    if (
+      !childName ||
+      !city ||
+      !lat ||
+      !lng ||
+      !gift ||
+      !giftPrice ||
+      !answers
+    ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Predict gift price using AI
-    console.log(`Predicting price for: ${gift}`);
-    const giftPrice = await predictGiftPrice(gift);
-    console.log(`Predicted price: ₹${giftPrice}`);
+    console.log(`Gift: ${gift}, Price: ₹${giftPrice}`);
 
     // Calculate hero scores
     const heroScores = calculateHeroScores(answers, giftPrice);

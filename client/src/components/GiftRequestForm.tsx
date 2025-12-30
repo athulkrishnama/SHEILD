@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import api from "../api/axios";
 import { motion } from "framer-motion";
 import { Gift } from "lucide-react";
@@ -25,28 +25,52 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
     lat: 0,
     lng: 0,
     gift: "",
+    giftPrice: "",
+    answers: {
+      favoriteColor: "",
+      favoriteSuperhero: "",
+      wantsRacing: false,
+    },
   });
-
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setSubmitting(true);
 
     try {
       await api.post("/api/requests", {
-        ...formData,
-        answers,
+        childName: formData.childName,
+        city: formData.city,
+        gift: formData.gift,
+        giftPrice: parseFloat(formData.giftPrice),
+        lat: formData.lat,
+        lng: formData.lng,
+        answers: formData.answers,
       });
 
-      onSuccess();
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to submit request");
+      alert("🎅 Your gift request has been submitted!");
+      setFormData({
+        childName: "",
+        city: "",
+        gift: "",
+        giftPrice: "",
+        lat: 0,
+        lng: 0,
+        answers: {
+          favoriteColor: "",
+          favoriteSuperhero: "",
+          wantsRacing: false,
+        },
+      });
+      onSuccess(); // Keep onSuccess call as it might be used for UI updates
+    } catch (error) {
+      console.error("Error submitting request:", error);
+      alert("Failed to submit request. Please try again.");
+      setError("Failed to submit request. Please try again."); // Re-add setError for consistency with original error handling
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -105,9 +129,24 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
           value={formData.gift}
           onChange={(e) => setFormData({ ...formData, gift: e.target.value })}
         />
-        <p className="text-xs text-grey-700 mt-1">
-          💡 Our AI will estimate the price automatically
-        </p>
+      </div>
+
+      {/* Gift Price */}
+      <div>
+        <label className="block text-sm font-semibold mb-2 text-grey-800">
+          Gift Price (₹)
+        </label>
+        <input
+          type="number"
+          className="input"
+          placeholder="Enter approximate price"
+          value={formData.giftPrice}
+          onChange={(e) =>
+            setFormData({ ...formData, giftPrice: e.target.value })
+          }
+          min="1"
+          required
+        />
       </div>
 
       {/* Questions */}
@@ -129,30 +168,26 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
                 {q.text}
               </span>
               <div className="flex gap-2">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                    answers[q.id] === "yes"
-                      ? "bg-christmas-red text-white shadow-christmas"
-                      : "bg-white text-grey-700 border-2 border-border-grey hover:border-christmas-red"
-                  }`}
-                  onClick={() => setAnswers({ ...answers, [q.id]: "yes" })}
-                >
-                  Yes
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                    answers[q.id] === "no"
-                      ? "bg-christmas-red text-white shadow-christmas"
-                      : "bg-white text-grey-700 border-2 border-border-grey hover:border-christmas-red"
-                  }`}
-                  onClick={() => setAnswers({ ...answers, [q.id]: "no" })}
-                >
-                  No
-                </motion.button>
+                {["yes", "no"].map((option) => (
+                  <motion.button
+                    key={option}
+                    whileTap={{ scale: 0.95 }}
+                    type="button"
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                      (formData.answers as any)[q.id] === option
+                        ? "bg-christmas-red text-white shadow-christmas"
+                        : "bg-white text-grey-700 border-2 border-border-grey hover:border-christmas-red"
+                    }`}
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        answers: { ...prev.answers, [q.id]: option },
+                      }))
+                    }
+                  >
+                    {option === "yes" ? "Yes" : "No"}
+                  </motion.button>
+                ))}
               </div>
             </motion.div>
           ))}
@@ -175,10 +210,10 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         type="submit"
-        disabled={loading}
+        disabled={submitting}
         className="btn btn-primary w-full text-lg py-4"
       >
-        {loading ? (
+        {submitting ? (
           <span className="flex items-center justify-center gap-2">
             <span className="animate-pulse-slow">🎁</span>
             Submitting...

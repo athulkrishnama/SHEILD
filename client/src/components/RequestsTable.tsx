@@ -135,9 +135,6 @@ export default function RequestsTable({
                   <Gift size={14} className="text-christmas-red" />
                   <span className="font-medium">{request.gift}</span>
                 </p>
-                <p className="text-xs text-grey-600 mt-1">
-                  ₹{request.giftPrice}
-                </p>
               </div>
 
               {/* Assigned Hero */}
