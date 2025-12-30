@@ -72,10 +72,12 @@ export default function HeroStatusPanel({ heroes }: HeroStatusPanelProps) {
             <div className="flex justify-between items-center">
               <span className="text-grey-700 flex items-center gap-1">
                 <Clock size={14} />
-                Total ETA:
+                ETA:
               </span>
-              <span className="text-black font-semibold">
-                {formatTime(hero.totalRemainingTime)}
+              <span className="font-semibold text-black">
+                {hero.totalRemainingTime > 0
+                  ? formatTime(hero.totalRemainingTime)
+                  : "No active delivery"}
               </span>
             </div>
           </div>

@@ -9,16 +9,16 @@ const activeDeliveries = new Map();
  * Start delivery simulation for a hero
  * @param {string} heroId - Hero's MongoDB ID
  * @param {string} requestId - Request's MongoDB ID
- * @param {number} etaMinutes - Delivery time in minutes
+ * @param {number} etaSeconds - Delivery time in SECONDS
  * @returns {string} - Delivery ID for tracking
  */
-export function startDelivery(heroId, requestId, etaMinutes) {
+export function startDelivery(heroId, requestId, etaSeconds) {
   const deliveryId = `${heroId}-${requestId}`;
 
   console.log(`🚀 startDelivery called:`, {
     heroId,
     requestId,
-    etaMinutes,
+    etaSeconds,
     deliveryId,
   });
 
@@ -27,17 +27,17 @@ export function startDelivery(heroId, requestId, etaMinutes) {
     console.log(`⏰ Delivery timer completed for: ${deliveryId}`);
     await completeDelivery(heroId, requestId);
     activeDeliveries.delete(deliveryId);
-  }, etaMinutes * 60 * 1000); // Convert minutes to milliseconds
+  }, etaSeconds * 1000); // Convert seconds to milliseconds
 
   activeDeliveries.set(deliveryId, {
     heroId,
     requestId,
     timerId,
     startTime: new Date(),
-    eta: etaMinutes,
+    eta: etaSeconds,
   });
 
-  console.log(`✅ Delivery started: ${deliveryId}, ETA: ${etaMinutes} minutes`);
+  console.log(`✅ Delivery started: ${deliveryId}, ETA: ${etaSeconds} seconds`);
   console.log(`📊 Total active deliveries: ${activeDeliveries.size}`);
   console.log(`🗺️ Active deliveries map:`, Array.from(activeDeliveries.keys()));
 

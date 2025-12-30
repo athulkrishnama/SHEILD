@@ -205,24 +205,36 @@ export default function DeliveryMap({ mapboxToken }: DeliveryMapProps) {
         // Fit map to show route
         fitMapToRoute(map.current!, delivery.lng, delivery.lat);
 
-        // Calculate remaining duration - use remainingTime from API in minutes
-        const remainingMinutes =
-          (delivery as any).remainingTime || delivery.eta;
-        const remainingDuration = Math.max(remainingMinutes * 60 * 1000, 1000); // At least 1 second
+        // Calculate remaining time
+        const elapsed = Date.now() - new Date(delivery.startTime).getTime();
+        const totalDuration = delivery.eta * 1000; // eta is in seconds, convert to ms
+        const remainingMs = Math.max(totalDuration - elapsed, 0);
+
+        console.log("Delivery animation:", {
+          hero: delivery.heroName,
+          eta: delivery.eta,
+          elapsed: elapsed / 1000,
+          remaining: remainingMs / 1000,
+        });
+
+        const remainingDuration = remainingMs; // Use remainingMs directly for animation duration
 
         console.log("Animation details:", {
           hero: delivery.heroName,
           totalETA: delivery.eta,
           progress: (delivery as any).progress,
-          remainingMinutes,
           remainingDuration: `${(remainingDuration / 1000).toFixed(1)}s`,
         });
+
+        console.log(
+          `Animating ${delivery.heroName} for remaining ${remainingMs / 1000}s`
+        );
 
         animateHeroMovement(
           heroMarker,
           delivery.lng,
           delivery.lat,
-          remainingDuration,
+          remainingMs, // Already in milliseconds
           () => {
             console.log(`${delivery.heroName} reached destination!`);
             // Remove marker after a delay
