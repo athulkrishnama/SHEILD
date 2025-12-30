@@ -243,8 +243,8 @@ export default function DeliveryMap({ mapboxToken }: DeliveryMapProps) {
     return (
       <div className="card p-8 text-center">
         <div className="text-4xl mb-4">🗺️</div>
-        <h3 className="text-xl font-semibold mb-2 text-white">Map Disabled</h3>
-        <p className="text-gray-400">
+        <h3 className="text-xl font-semibold mb-2 text-black">Map Disabled</h3>
+        <p className="text-grey-700">
           Add MAPBOX_ACCESS_TOKEN to your .env file to enable map visualization
         </p>
       </div>
@@ -254,11 +254,11 @@ export default function DeliveryMap({ mapboxToken }: DeliveryMapProps) {
   return (
     <div className="space-y- 4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-white">
-          Live Delivery Tracking
+        <h2 className="text-2xl font-semibold text-black flex items-center gap-2">
+          📍 Live Delivery Tracking
         </h2>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-green-900/50 text-green-300 rounded-full text-sm font-semibold">
+          <span className="badge badge-red">
             {activeDeliveries.length} Active Delivery
             {activeDeliveries.length !== 1 ? "s" : ""}
           </span>
@@ -277,23 +277,21 @@ export default function DeliveryMap({ mapboxToken }: DeliveryMapProps) {
             <div key={delivery.requestId} className="card">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h4 className="font-semibold text-white">
+                  <h4 className="font-semibold text-black">
                     {delivery.heroName}
                   </h4>
-                  <p className="text-sm text-gray-400">→ {delivery.city}</p>
+                  <p className="text-sm text-grey-700">→ {delivery.city}</p>
                 </div>
-                <span className="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs font-semibold">
-                  En Route
-                </span>
+                <span className="badge badge-red">En Route</span>
               </div>
-              <div className="text-sm text-gray-300">
+              <div className="text-sm text-grey-800">
                 <p>
                   Delivering to:{" "}
-                  <span className="text-white font-semibold">
+                  <span className="text-black font-semibold">
                     {delivery.childName}
                   </span>
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-grey-700 mt-1">
                   ETA: {formatTime(delivery.eta)}
                 </p>
               </div>
@@ -305,7 +303,7 @@ export default function DeliveryMap({ mapboxToken }: DeliveryMapProps) {
       {activeDeliveries.length === 0 && (
         <div className="card text-center py-8">
           <div className="text-4xl mb-3">✈️</div>
-          <p className="text-gray-400">No active deliveries at the moment</p>
+          <p className="text-grey-700">No active deliveries at the moment</p>
         </div>
       )}
     </div>

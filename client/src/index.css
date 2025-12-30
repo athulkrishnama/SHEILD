@@ -6,6 +6,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   CHRISTMAS THEME - STRICT COLOR SYSTEM
+   ========================================= */
+
+:root {
+  /* Primary - Christmas Red */
+  --christmas-red-dark: #C1121F;
+  --christmas-red: #D62828;
+  --christmas-red-light: #E63946;
+  
+  /* Background - Pure White */
+  --white: #FFFFFF;
+  --snow-white: #FAFAFA;
+  --light-grey: #F1F1F1;
+  
+  /* Text - Black Shades Only */
+  --black: #000000;
+  --grey-900: #111111;
+  --grey-800: #222222;
+  --grey-700: #333333;
+  
+  /* Borders & Disabled */
+  --border-grey: #E5E7EB;
+  --disabled-grey: #9CA3AF;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -14,37 +40,41 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: var(--white);
   min-height: 100vh;
-  color: #f1f5f9;
+  color: var(--grey-900);
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
+  color: var(--black);
 }
 
-/* Mapbox GL CSS */
-@import 'mapbox-gl/dist/mapbox-gl.css';
+/* ============================================
+   CUSTOM SCROLLBAR
+   ========================================= */
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: var(--snow-white);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: var(--christmas-red);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: var(--christmas-red-dark);
 }
 
-/* Animations */
+/* ============================================
+   ANIMATIONS
+   ========================================= */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -61,7 +91,16 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
   }
 }
 
@@ -73,86 +112,263 @@ h1, h2, h3, h4, h5, h6 {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Card styles */
+/* ============================================
+   CARD STYLES - PREMIUM WHITE
+   ========================================= */
+
 .card {
-  background: rgba(30, 41, 59, 0.6);
+  background: var(--white);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 12px;
+  border: 1px solid var(--border-grey);
+  border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .card:hover {
-  border-color: rgba(148, 163, 184, 0.3);
+  border-color: var(--christmas-red-light);
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(193, 18, 31, 0.12);
 }
 
-/* Button styles */
+/* ============================================
+   BUTTON STYLES - CHRISTMAS RED
+   ========================================= */
+
 .btn {
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
   border: none;
   font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
+  background: var(--christmas-red);
+  color: var(--white);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: var(--christmas-red-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 16px rgba(193, 18, 31, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  background: var(--christmas-red-light);
+  color: var(--white);
 }
 
 .btn-success:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: var(--christmas-red);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 16px rgba(230, 57, 70, 0.3);
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
+  background: var(--christmas-red-dark);
+  color: var(--white);
 }
 
-/* Input styles */
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--christmas-red);
+  color: var(--christmas-red);
+}
+
+.btn-outline:hover {
+  background: var(--christmas-red);
+  color: var(--white);
+}
+
+/* ============================================
+   INPUT STYLES - WHITE WITH RED FOCUS
+   ========================================= */
+
 .input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 8px;
-  color: #f1f5f9;
+  background: var(--white);
+  border: 2px solid var(--border-grey);
+  border-radius: 12px;
+  color: var(--grey-900);
   font-size: 0.95rem;
   transition: all 0.2s ease;
 }
 
 .input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--christmas-red);
+  box-shadow: 0 0 0 4px rgba(193, 18, 31, 0.1);
 }
 
 .input::placeholder {
-  color: #94a3b8;
+  color: var(--disabled-grey);
 }
 
-/* Map container */
+/* ============================================
+   MAP CONTAINER
+   ========================================= */
+
 .map-container {
   height: 500px;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 2px solid var(--border-grey);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ============================================
+   BADGE STYLES - RED PILLS
+   ========================================= */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.badge-red {
+  background: var(--christmas-red);
+  color: var(--white);
+}
+
+.badge-outline {
+  background: transparent;
+  border: 2px solid var(--christmas-red);
+  color: var(--christmas-red);
+}
+
+/* ============================================
+   STATUS COLORS (RED SHADES ONLY)
+   ========================================= */
+
+.status-waiting {
+  background: rgba(230, 57, 70, 0.1);
+  color: var(--christmas-red-dark);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+}
+
+.status-assigned {
+  background: rgba(214, 40, 40, 0.1);
+  color: var(--christmas-red);
+  border: 1px solid rgba(214, 40, 40, 0.3);
+}
+
+.status-delivering {
+  background: rgba(193, 18, 31, 0.1);
+  color: var(--christmas-red-dark);
+  border: 1px solid rgba(193, 18, 31, 0.3);
+}
+
+.status-completed {
+  background: var(--light-grey);
+  color: var(--grey-700);
+  border: 1px solid var(--border-grey);
+}
+
+/* ============================================
+   TABLE STYLES - WHITE WITH GREY DIVIDERS
+   ========================================= */
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  background: var(--snow-white);
+  color: var(--grey-800);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border-grey);
+}
+
+td {
+  padding: 1rem;
+  background: var(--white);
+  color: var(--grey-900);
+  border-bottom: 1px solid var(--border-grey);
+}
+
+tr:hover td {
+  background: var(--snow-white);
+}
+
+/* ============================================
+   SNOW DECORATION EFFECTS
+   ========================================= */
+
+.snow-decoration {
+  position: relative;
+  overflow: hidden;
+}
+
+.snow-decoration::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60 Q150 30 300 60 T600 60 T900 60 T1200 60 L1200 0 L0 0 Z' fill='white' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* ============================================
+   HERO SECTION - RED BACKGROUND
+   ========================================= */
+
+.hero-red {
+  background: var(--christmas-red);
+  color: var(--white);
+  padding: 3rem 1.5rem;
+  border-radius: 0 0 24px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-red::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q100 0 200 20 T400 20 T600 20 T800 20 T1000 20 T1200 20 L1200 40 L0 40 Z' fill='white'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ========================================= */
+
+.text-christmas-red {
+  color: var(--christmas-red);
+}
+
+.bg-christmas-red {
+  background-color: var(--christmas-red);
+}
+
+.border-christmas-red {
+  border-color: var(--christmas-red);
+}
+
+.shadow-christmas {
+  box-shadow: 0 4px 16px rgba(193, 18, 31, 0.15);
 }

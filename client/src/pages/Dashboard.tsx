@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 import HeroStatusPanel from "../components/HeroStatusPanel";
 import RequestsTable from "../components/RequestsTable";
 import DeliveryMap from "../components/DeliveryMap";
+import { SnowOverlay } from "../components/decorations/ChristmasDecor";
 
-// Get Mapbox token from environment or use empty string
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || "";
 
 export default function Dashboard() {
@@ -14,7 +15,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
-    // Poll every 5 seconds for updates
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -40,7 +40,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-6xl mb-4 animate-pulse-slow">🎅</div>
-          <p className="text-xl text-gray-300">
+          <p className="text-xl text-grey-800">
             Loading Santa's Control Room...
           </p>
         </div>
@@ -49,32 +49,59 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-display font-bold mb-2 bg-gradient-to-r from-hero-blue to-hero-purple bg-clip-text text-transparent">
-          🎅 Santa's Control Room
-        </h1>
-        <p className="text-gray-400">Monitor all deliveries and hero status</p>
-      </div>
+    <div className="min-h-screen">
+      {/* Hero Section - Christmas Red */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="hero-red mb-12"
+      >
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-4xl font-display font-bold mb-2 text-white">
+            🎅 Santa's Control Room
+          </h1>
+          <p className="text-white/90">
+            Monitor all deliveries and hero status
+          </p>
+        </div>
+        <SnowOverlay />
+      </motion.div>
 
-      {/* Hero Status Panel */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-white">Hero Status</h2>
-        <HeroStatusPanel heroes={heroes} />
-      </div>
+      <div className="container mx-auto px-4 pb-12">
+        {/* Hero Status Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <h2 className="text-2xl font-semibold mb-4 text-black flex items-center gap-2">
+            ⭐ Hero Status
+          </h2>
+          <HeroStatusPanel heroes={heroes} />
+        </motion.div>
 
-      {/* Live Delivery Map */}
-      <div className="mb-8">
-        <DeliveryMap mapboxToken={MAPBOX_TOKEN} />
-      </div>
+        {/* Live Delivery Map */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <DeliveryMap mapboxToken={MAPBOX_TOKEN} />
+        </motion.div>
 
-      {/* Requests Table */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4 text-white">
-          Gift Requests
-        </h2>
-        <RequestsTable requests={requests} onAssign={fetchData} />
+        {/* Requests Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <h2 className="text-2xl font-semibold mb-4 text-black flex items-center gap-2">
+            🎁 Gift Requests
+          </h2>
+          <RequestsTable requests={requests} onAssign={fetchData} />
+        </motion.div>
       </div>
     </div>
   );

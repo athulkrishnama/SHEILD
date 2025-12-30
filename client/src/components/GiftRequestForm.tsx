@@ -1,5 +1,7 @@
 import { useState, FormEvent } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { Gift, MapPin } from "lucide-react";
 
 interface GiftRequestFormProps {
   onSuccess: () => void;
@@ -50,8 +52,6 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
   const handleCityChange = async (cityName: string) => {
     setFormData((prev) => ({ ...prev, city: cityName }));
 
-    // Simplified geocoding - in production, use Mapbox Geocoding API
-    // For demo, using some common Indian cities
     const cities: Record<string, { lat: number; lng: number }> = {
       Kochi: { lat: 9.9312, lng: 76.2673 },
       Mumbai: { lat: 19.076, lng: 72.8777 },
@@ -70,10 +70,15 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <motion.form
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
       {/* Child Name */}
       <div>
-        <label className="block text-sm font-semibold mb-2 text-gray-200">
+        <label className="block text-sm font-semibold mb-2 text-grey-800">
           Your Name
         </label>
         <input
@@ -90,7 +95,8 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
 
       {/* City */}
       <div>
-        <label className="block text-sm font-semibold mb-2 text-gray-200">
+        <label className="block text-sm font-semibold mb-2 text-grey-800 flex items-center gap-2">
+          <MapPin size={16} className="text-christmas-red" />
           City
         </label>
         <select
@@ -110,7 +116,8 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
 
       {/* Gift */}
       <div>
-        <label className="block text-sm font-semibold mb-2 text-gray-200">
+        <label className="block text-sm font-semibold mb-2 text-grey-800 flex items-center gap-2">
+          <Gift size={16} className="text-christmas-red" />
           What gift do you want?
         </label>
         <input
@@ -121,67 +128,78 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
           value={formData.gift}
           onChange={(e) => setFormData({ ...formData, gift: e.target.value })}
         />
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-xs text-grey-700 mt-1">
           💡 Our AI will estimate the price automatically
         </p>
       </div>
 
       {/* Questions */}
       <div>
-        <h3 className="text-lg font-semibold mb-4 text-gray-200">
+        <h3 className="text-lg font-semibold mb-4 text-black">
           Answer a few questions:
         </h3>
-        <div className="space-y-4">
-          {questions.map((q) => (
-            <div
+        <div className="space-y-3">
+          {questions.map((q, index) => (
+            <motion.div
               key={q.id}
-              className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="flex items-center justify-between p-4 bg-snow-white rounded-lg border border-border-grey hover:border-christmas-red-light transition-colors"
             >
-              <span className="text-gray-200">
+              <span className="text-grey-900 font-medium">
                 <span className="mr-2">{q.icon}</span>
                 {q.text}
               </span>
               <div className="flex gap-2">
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   type="button"
                   className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                     answers[q.id] === "yes"
-                      ? "bg-green-600 text-white"
-                      : "bg-slate-700 text-gray-300 hover:bg-slate-600"
+                      ? "bg-christmas-red text-white shadow-christmas"
+                      : "bg-white text-grey-700 border-2 border-border-grey hover:border-christmas-red"
                   }`}
                   onClick={() => setAnswers({ ...answers, [q.id]: "yes" })}
                 >
                   Yes
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   type="button"
                   className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                     answers[q.id] === "no"
-                      ? "bg-red-600 text-white"
-                      : "bg-slate-700 text-gray-300 hover:bg-slate-600"
+                      ? "bg-christmas-red text-white shadow-christmas"
+                      : "bg-white text-grey-700 border-2 border-border-grey hover:border-christmas-red"
                   }`}
                   onClick={() => setAnswers({ ...answers, [q.id]: "no" })}
                 >
                   No
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-200">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-4 bg-white border-l-4 border-christmas-red rounded-lg text-christmas-red-dark"
+        >
           {error}
-        </div>
+        </motion.div>
       )}
 
       {/* Submit Button */}
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         type="submit"
         disabled={loading}
-        className="btn btn-success w-full text-lg py-4"
+        className="btn btn-primary w-full text-lg py-4"
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
@@ -191,7 +209,7 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
         ) : (
           "🎄 Submit Gift Request"
         )}
-      </button>
-    </form>
+      </motion.button>
+    </motion.form>
   );
 }

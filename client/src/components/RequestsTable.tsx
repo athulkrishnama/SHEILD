@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronUp, UserCheck } from "lucide-react";
 import { formatTime } from "../utils/timeFormatter";
 
 interface Request {
@@ -41,12 +43,10 @@ export default function RequestsTable({
       const response = await axios.get(
         `/api/requests/${requestId}/recommendations`
       );
-      console.log("Recommendations response:", response.data);
-      console.log("Recommendations array:", response.data.recommendations);
       setRecommendations(response.data.recommendations);
     } catch (error) {
       console.error("Error getting recommendations:", error);
-      alert("Failed to load recommendations. Check console for details.");
+      alert("Failed to load recommendations");
     } finally {
       setLoadingRecs(false);
     }
@@ -66,19 +66,18 @@ export default function RequestsTable({
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "waiting":
-        return "bg-yellow-900/50 text-yellow-300";
-      case "assigned":
-        return "bg-blue-900/50 text-blue-300";
-      case "delivering":
-        return "bg-purple-900/50 text-purple-300";
-      case "completed":
-        return "bg-green-900/50 text-green-300";
-      default:
-        return "bg-gray-900/50 text-gray-300";
-    }
+  const getStatusBadge = (status: string) => {
+    const statusClasses = {
+      waiting: "status-waiting",
+      assigned: "status-assigned",
+      delivering: "status-delivering",
+      completed: "status-completed",
+    };
+
+    return (
+      statusClasses[status as keyof typeof statusClasses] ||
+      statusClasses.completed
+    );
   };
 
   return (
@@ -86,27 +85,29 @@ export default function RequestsTable({
       {requests.length === 0 ? (
         <div className="card text-center py-12">
           <div className="text-6xl mb-4">📭</div>
-          <p className="text-xl text-gray-400">No gift requests yet</p>
+          <p className="text-xl text-grey-700">No gift requests yet</p>
         </div>
       ) : (
-        requests.map((request) => (
-          <div key={request._id} className="card">
+        requests.map((request, index) => (
+          <motion.div
+            key={request._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            className="card"
+          >
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-xl font-semibold text-white mb-1">
+                <h3 className="text-xl font-semibold text-black mb-1">
                   {request.childName} - {request.city}
                 </h3>
-                <p className="text-gray-300">
+                <p className="text-grey-800">
                   🎁 {request.gift}{" "}
-                  <span className="text-gray-500">(₹{request.giftPrice})</span>
+                  <span className="text-grey-600">(₹{request.giftPrice})</span>
                 </p>
               </div>
               <div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                    request.status
-                  )}`}
-                >
+                <span className={`badge ${getStatusBadge(request.status)}`}>
                   {request.status.charAt(0).toUpperCase() +
                     request.status.slice(1)}
                 </span>
@@ -114,9 +115,10 @@ export default function RequestsTable({
             </div>
 
             {request.assignedHero && (
-              <div className="mb-4 p-3 bg-slate-800/50 rounded-lg">
-                <p className="text-sm text-gray-400">Assigned to:</p>
-                <p className="text-white font-semibold">
+              <div className="mb-4 p-3 bg-snow-white rounded-lg border border-border-grey">
+                <p className="text-sm text-grey-700 mb-1">Assigned to:</p>
+                <p className="text-black font-semibold flex items-center gap-2">
+                  <UserCheck size={16} className="text-christmas-red" />
                   {request.assignedHero.name} - ETA: {formatTime(request.eta)}
                 </p>
               </div>
@@ -124,97 +126,104 @@ export default function RequestsTable({
 
             {request.status === "waiting" && (
               <div>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => getRecommendations(request._id)}
-                  className="btn btn-primary w-full"
+                  className="btn btn-primary w-full flex items-center justify-center gap-2"
                   disabled={loadingRecs}
                 >
-                  {expandedRequest === request._id ? "Hide" : "Show"} Hero
-                  Recommendations
-                </button>
+                  {expandedRequest === request._id ? (
+                    <>
+                      <ChevronUp size={20} />
+                      Hide Hero Recommendations
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown size={20} />
+                      Show Hero Recommendations
+                    </>
+                  )}
+                </motion.button>
 
-                {expandedRequest === request._id && (
-                  <div className="mt-4 space-y-2">
-                    {loadingRecs ? (
-                      <p className="text-center text-gray-400">
-                        Loading recommendations...
-                      </p>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        {recommendations.length === 0 ? (
-                          <p className="text-center text-gray-400 py-4">
-                            No recommendations available. Check server logs.
-                          </p>
-                        ) : (
-                          <table className="w-full text-sm">
-                            <thead>
-                              <tr className="border-b border-gray-700">
-                                <th className="text-left py-2 text-gray-400">
-                                  Hero
-                                </th>
-                                <th className="text-left py-2 text-gray-400">
-                                  Score
-                                </th>
-                                <th className="text-left py-2 text-gray-400">
-                                  ETA
-                                </th>
-                                <th className="text-left py-2 text-gray-400">
-                                  Status
-                                </th>
-                                <th className="text-left py-2 text-gray-400">
-                                  Action
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {recommendations.map((rec) => (
-                                <tr
-                                  key={rec.heroId}
-                                  className="border-b border-gray-800"
-                                >
-                                  <td className="py-3 text-white font-semibold">
-                                    {rec.name}
-                                  </td>
-                                  <td className="py-3 text-white">
-                                    {rec.score}
-                                  </td>
-                                  <td className="py-3 text-white">
-                                    {formatTime(rec.eta)}
-                                  </td>
-                                  <td className="py-3">
-                                    <span
-                                      className={
-                                        rec.status === "Free"
-                                          ? "text-green-400"
-                                          : "text-red-400"
-                                      }
-                                    >
-                                      {rec.status}
-                                    </span>
-                                  </td>
-                                  <td className="py-3">
-                                    <button
-                                      onClick={() =>
-                                        assignHero(request._id, rec.heroId)
-                                      }
-                                      disabled={assigning}
-                                      className="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-semibold transition-colors"
-                                    >
-                                      Assign
-                                    </button>
-                                  </td>
+                <AnimatePresence>
+                  {expandedRequest === request._id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-4"
+                    >
+                      {loadingRecs ? (
+                        <p className="text-center text-grey-700 py-4">
+                          Loading recommendations...
+                        </p>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          {recommendations.length === 0 ? (
+                            <p className="text-center text-grey-700 py-4">
+                              No recommendations available
+                            </p>
+                          ) : (
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr>
+                                  <th className="text-left py-2">Hero</th>
+                                  <th className="text-left py-2">Score</th>
+                                  <th className="text-left py-2">ETA</th>
+                                  <th className="text-left py-2">Status</th>
+                                  <th className="text-left py-2">Action</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
+                              </thead>
+                              <tbody>
+                                {recommendations.map((rec) => (
+                                  <tr key={rec.heroId}>
+                                    <td className="py-3 text-black font-semibold">
+                                      {rec.name}
+                                    </td>
+                                    <td className="py-3 text-grey-900">
+                                      {rec.score}
+                                    </td>
+                                    <td className="py-3 text-grey-900">
+                                      {formatTime(rec.eta)}
+                                    </td>
+                                    <td className="py-3">
+                                      <span
+                                        className={
+                                          rec.status === "Free"
+                                            ? "text-christmas-red font-semibold"
+                                            : "text-grey-600"
+                                        }
+                                      >
+                                        {rec.status}
+                                      </span>
+                                    </td>
+                                    <td className="py-3">
+                                      <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() =>
+                                          assignHero(request._id, rec.heroId)
+                                        }
+                                        disabled={assigning}
+                                        className="btn btn-success text-xs px-3 py-1"
+                                      >
+                                        Assign
+                                      </motion.button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
-          </div>
+          </motion.div>
         ))
       )}
     </div>
