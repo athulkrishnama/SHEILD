@@ -1,7 +1,8 @@
 import { useState, FormEvent } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Gift, MapPin } from "lucide-react";
+import { Gift } from "lucide-react";
+import CitySearchBox from "./CitySearchBox";
 
 interface GiftRequestFormProps {
   onSuccess: () => void;
@@ -49,24 +50,13 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
     }
   };
 
-  const handleCityChange = async (cityName: string) => {
-    setFormData((prev) => ({ ...prev, city: cityName }));
-
-    const cities: Record<string, { lat: number; lng: number }> = {
-      Kochi: { lat: 9.9312, lng: 76.2673 },
-      Mumbai: { lat: 19.076, lng: 72.8777 },
-      Delhi: { lat: 28.6139, lng: 77.209 },
-      Bangalore: { lat: 12.9716, lng: 77.5946 },
-      Chennai: { lat: 13.0827, lng: 80.2707 },
-    };
-
-    if (cities[cityName]) {
-      setFormData((prev) => ({
-        ...prev,
-        lat: cities[cityName].lat,
-        lng: cities[cityName].lng,
-      }));
-    }
+  const handleCitySelect = (cityName: string, lat: number, lng: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      city: cityName,
+      lat,
+      lng,
+    }));
   };
 
   return (
@@ -93,25 +83,12 @@ export default function GiftRequestForm({ onSuccess }: GiftRequestFormProps) {
         />
       </div>
 
-      {/* City */}
+      {/* City Search */}
       <div>
-        <label className="block text-sm font-semibold mb-2 text-grey-800 flex items-center gap-2">
-          <MapPin size={16} className="text-christmas-red" />
+        <label className="block text-sm font-semibold mb-2 text-grey-800">
           City
         </label>
-        <select
-          required
-          className="input"
-          value={formData.city}
-          onChange={(e) => handleCityChange(e.target.value)}
-        >
-          <option value="">Select your city</option>
-          <option value="Kochi">Kochi</option>
-          <option value="Mumbai">Mumbai</option>
-          <option value="Delhi">Delhi</option>
-          <option value="Bangalore">Bangalore</option>
-          <option value="Chennai">Chennai</option>
-        </select>
+        <CitySearchBox onCitySelect={handleCitySelect} value={formData.city} />
       </div>
 
       {/* Gift */}
