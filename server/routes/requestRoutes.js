@@ -46,6 +46,17 @@ router.post("/", async (req, res) => {
 
     await request.save();
 
+    // Store request ID in session for child to track later
+    req.session.childRequestId = request._id.toString();
+
+    // Explicitly save session to ensure it persists
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
     res.status(201).json({
       success: true,
       request: request,
@@ -54,6 +65,32 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error("Error creating request:", error);
     res.status(500).json({ error: "Failed to create request" });
+  }
+});
+
+/**
+ * GET /api/requests/my-request - Get child's own request from session
+ * IMPORTANT: This must come BEFORE the /:id route
+ */
+router.get("/my-request", async (req, res) => {
+  try {
+    const requestId = req.session.childRequestId;
+
+    console.log("Session ID:", req.sessionID);
+    console.log("Stored Request ID:", requestId);
+
+    if (!requestId) {
+      return res.json({ request: null });
+    }
+
+    const request = await Request.findById(requestId).populate("assignedHero");
+
+    console.log("Found request:", request ? request.childName : "none");
+
+    res.json({ request });
+  } catch (error) {
+    console.error("Error fetching child request:", error);
+    res.status(500).json({ error: "Failed to fetch request" });
   }
 });
 

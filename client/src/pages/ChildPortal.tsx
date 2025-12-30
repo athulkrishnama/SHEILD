@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import GiftRequestForm from "../components/GiftRequestForm";
+import GiftStatusChecker from "../components/GiftStatusChecker";
 import { SnowOverlay } from "../components/decorations/ChristmasDecor";
 
 export default function ChildPortal() {
@@ -31,7 +32,7 @@ export default function ChildPortal() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="card"
+            className="card mb-8"
           >
             <GiftRequestForm onSuccess={() => setSubmitted(true)} />
           </motion.div>
@@ -39,7 +40,7 @@ export default function ChildPortal() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="card text-center"
+            className="card text-center mb-8"
           >
             <div className="text-6xl mb-4">🎁✨</div>
             <h2 className="text-3xl font-display font-bold mb-4 text-christmas-red">
@@ -58,6 +59,15 @@ export default function ChildPortal() {
             </motion.button>
           </motion.div>
         )}
+
+        {/* Gift Status Checker */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <GiftStatusChecker />
+        </motion.div>
       </div>
     </div>
   );
