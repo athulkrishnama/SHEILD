@@ -1,5 +1,16 @@
 # S.H.I.E.L.D - Santa's Hero Integrated Express Logistics Dashboard
 
+## 🎅 About the Project
+
+Santa is getting old and can't deliver gifts all over the world anymore. So he hired some superheroes to handle the deliveries! Now Santa just has to assign the right superhero for each delivery based on the child's preferences and location.
+
+## 🌐 Live Demo
+
+**🎁 Child Portal:** [https://shield.athulkrishnama.shop](https://shield.athulkrishnama.shop)  
+**🎛️ Santa's Dashboard:** [https://shield.athulkrishnama.shop/dashboard](https://shield.athulkrishnama.shop/dashboard)
+
+## 📖 Overview
+
 A full-stack application that assigns superhero delivery agents to deliver Christmas gifts based on child preferences, location characteristics, and hero availability.
 
 ## 🎯 Features
