@@ -9,6 +9,10 @@ Santa is getting old and can't deliver gifts all over the world anymore. So he h
 **🎁 Child Portal:** [https://shield.athulkrishnama.shop](https://shield.athulkrishnama.shop)  
 **🎛️ Santa's Dashboard:** [https://shield.athulkrishnama.shop/dashboard](https://shield.athulkrishnama.shop/dashboard)
 
+### 🔐 Dashboard Credentials
+- **Username:** `admin`
+- **Password:** `password`
+
 ## 📖 Overview
 
 A full-stack application that assigns superhero delivery agents to deliver Christmas gifts based on child preferences, location characteristics, and hero availability.
